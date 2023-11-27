@@ -2,7 +2,11 @@
   <div>
     <p>{{ title }}</p>
     <ul>
-      <li v-for="todo in todos" :key="todo.id" @click="increment">
+      <li
+        v-for="todo in todos"
+        :key="todo.id"
+        @click="increment"
+      >
         {{ todo.id }} - {{ todo.content }}
       </li>
     </ul>
@@ -13,8 +17,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { Todo, Meta } from './models';
+import {
+  computed, ref,
+} from 'vue';
+import {
+  Meta, Todo,
+} from './models';
 
 interface Props {
   title: string;
@@ -27,6 +35,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const clickCount = ref(0);
+
 function increment() {
   clickCount.value += 1;
   return clickCount.value;
