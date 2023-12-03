@@ -25,6 +25,11 @@ const routes: RouteRecordRaw[] = [
             name: MenuEnum.PlayerTable,
             component: () => import('pages/player/PlayerTable.vue'),
           },
+          {
+            path: '',
+            name: MenuEnum.PlayerAdd,
+            component: () => import('pages/player/PlayerAdd.vue'),
+          },
         ],
       },
     ],
