@@ -18,16 +18,16 @@ const columns: Array<QTableColumn<any>> = [
     field: row => row.event_name,
   },
   {
-    name: 'id',
-    label: '場次',
-    align: 'center',
-    field: row => row.id,
-  },
-  {
     name: 'round',
     label: '第幾輪',
     align: 'center',
     field: row => row.round,
+  },
+  {
+    name: 'roundIndex',
+    label: '此輪場次',
+    align: 'center',
+    field: row => row.roundIndex,
   },
   // TODO 顯示大比分
   {
