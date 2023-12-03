@@ -5,5 +5,10 @@ export enum MenuEnum {
   // Player
   Player = 'Player',
   PlayerTable = 'PlayerTable',
-  PlayerAdd = 'PlayerAdd'
+  PlayerAdd = 'PlayerAdd',
+
+  // Result
+  Result = 'Result',
+  ResultTable = 'ResultTable',
+  ResultAdd = 'ResultAdd'
 }

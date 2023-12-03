@@ -11,7 +11,6 @@ const routes: RouteRecordRaw[] = [
         name: MenuEnum.Home,
         component: () => import('pages/Home.vue'),
       },
-
       {
         path: 'player',
         name: MenuEnum.Player,
@@ -29,6 +28,26 @@ const routes: RouteRecordRaw[] = [
             path: '',
             name: MenuEnum.PlayerAdd,
             component: () => import('pages/player/PlayerAdd.vue'),
+          },
+        ],
+      },
+      {
+        path: 'result',
+        name: MenuEnum.Result,
+        component: () => import('pages/result/Result.vue'),
+        redirect: {
+          name: MenuEnum.ResultTable,
+        },
+        children: [
+          {
+            path: '',
+            name: MenuEnum.ResultTable,
+            component: () => import('pages/result/ResultTable.vue'),
+          },
+          {
+            path: '',
+            name: MenuEnum.ResultAdd,
+            component: () => import('pages/result/ResultAdd.vue'),
           },
         ],
       },

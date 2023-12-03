@@ -7,15 +7,21 @@ const router = useRouter();
 
 const tabs = [
   {
-    name: 'Home',
+    name: '首頁',
     icon: 'mdi-home',
     to: MenuEnum.Home,
 
   },
   {
-    name: 'Player',
+    name: '選手',
     icon: 'mdi-account',
     to: MenuEnum.Player,
+
+  },
+  {
+    name: '賽事',
+    icon: 'mdi-trophy',
+    to: MenuEnum.Result,
 
   },
 ];
@@ -82,7 +88,7 @@ function toggleLeftDrawer() {
       </q-list>
     </q-drawer>
 
-    <q-page-container>
+    <q-page-container class="q-pa-lg q-mt-md">
       <router-view />
     </q-page-container>
   </q-layout>
