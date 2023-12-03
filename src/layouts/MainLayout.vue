@@ -1,3 +1,36 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { MenuEnum } from '@/enums/common.enum';
+
+const router = useRouter();
+
+const tabs = [
+  {
+    name: 'Home',
+    icon: 'mdi-home',
+    to: MenuEnum.Home,
+
+  },
+  {
+    name: 'Player',
+    icon: 'mdi-account',
+    to: MenuEnum.Player,
+
+  },
+];
+
+function moveRoute(key: MenuEnum) {
+  return router.push({ name: key });
+}
+
+const leftDrawerOpen = ref(false);
+
+function toggleLeftDrawer() {
+  leftDrawerOpen.value = !leftDrawerOpen.value;
+}
+</script>
+
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
@@ -12,10 +45,8 @@
         />
 
         <q-toolbar-title>
-          Quasar App
+          Table Tennis Admin
         </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 
@@ -25,17 +56,29 @@
       bordered
     >
       <q-list>
-        <q-item-label
-          header
+        <template
+          v-for="tab in tabs"
+          :key="tab"
         >
-          Essential Links
-        </q-item-label>
-
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
+          <q-item
+            v-close-popup
+            class="dropdown__item"
+            active-class="text-negative"
+            clickable
+            manual-focus
+            @click="moveRoute(tab.to)"
+          >
+            <q-item-section no-wrap>
+              {{ tab.name }}
+            </q-item-section>
+            <q-item-section avatar>
+              <q-icon
+                :name="tab.icon"
+                color="bg-grey-14"
+              />
+            </q-item-section>
+          </q-item>
+        </template>
       </q-list>
     </q-drawer>
 
@@ -45,58 +88,9 @@
   </q-layout>
 </template>
 
-<script setup lang="ts">
-import EssentialLink, { EssentialLinkProps } from 'components/EssentialLink.vue';
-import { ref } from 'vue';
-
-const essentialLinks: EssentialLinkProps[] = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev',
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework',
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev',
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev',
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev',
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev',
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev',
-  },
-];
-
-const leftDrawerOpen = ref(false);
-
-function toggleLeftDrawer() {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
+<style lang="scss">
+.iconSize [class ~= "q-tab__icon"] {
+  font-size: 48px;
 }
-</script>
+
+</style>

@@ -13,8 +13,9 @@
 
 const path = require('path');
 const { configure } = require('quasar/wrappers');
+const env = require('./env.js');
 
-module.exports = configure((/* ctx */) => ({
+module.exports = configure(ctx => ({
   eslint: {
     // fix: true,
     // include: [],
@@ -32,7 +33,8 @@ module.exports = configure((/* ctx */) => ({
   // https://v2.quasar.dev/quasar-cli-vite/boot-files
   boot: [
     'i18n',
-
+    'store',
+    'api',
   ],
 
   // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
@@ -61,7 +63,7 @@ module.exports = configure((/* ctx */) => ({
       node: 'node16',
     },
 
-    vueRouterMode: 'hash', // available values: 'hash', 'history'
+    vueRouterMode: 'history', // available values: 'hash', 'history'
     // vueRouterBase,
     // vueDevtools,
     // vueOptionsAPI: false,
@@ -70,14 +72,19 @@ module.exports = configure((/* ctx */) => ({
 
     // publicPath: '/',
     // analyze: true,
-    // env: {},
+    env: env(ctx),
+
     // rawDefine: {}
     // ignorePublicFolder: true,
     // minify: false,
     // polyfillModulePreload: true,
     // distDir
 
-    // extendViteConf (viteConf) {},
+    extendViteConf(viteConf, { isServer, isClient }) {
+      Object.assign(viteConf.resolve.alias, {
+        '@': path.join(__dirname, './src'),
+      });
+    },
     // viteVuePluginOptions: {},
 
     vitePlugins: [
@@ -116,7 +123,10 @@ module.exports = configure((/* ctx */) => ({
     // directives: [],
 
     // Quasar plugins
-    plugins: [],
+    plugins: [
+      'Notify',
+      'Dialog',
+    ],
   },
 
   // animations: 'all', // --- includes all animations
