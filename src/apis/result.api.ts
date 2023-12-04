@@ -1,9 +1,9 @@
 import { useApi } from '@/composables/useApi';
 import {
-  Result, ResultPost,
+  Result, ResultPost, ResultPut,
 } from '@/types/result';
 
-const { getApi, postApi } = useApi();
+const { getApi, postApi, putApi } = useApi();
 
 export function useResultApi() {
   const url = {
@@ -19,8 +19,13 @@ export function useResultApi() {
     return postApi(url.result, postData);
   }
 
+  function putResult(postData: ResultPut) {
+    return putApi(url.result, postData);
+  }
+
   return {
     getResultList,
     postResult,
+    putResult,
   };
 }

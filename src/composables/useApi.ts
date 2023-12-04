@@ -81,11 +81,29 @@ function prepareApi(router?: Router) {
       });
   }
 
+  function putApi<D, P = any>(url: string, postData: P)
+    : AsyncApiResponse<D> {
+    return api.put<D>(url, postData)
+      .then(res => res)
+      .catch((err: AxiosError<D>) => {
+        if (err.response?.status === HttpStatusCode.Forbidden) {
+          reLoginService(router, err);
+        }
+
+        if (err.code === 'ERR_NETWORK') {
+          reLoginService(router, err);
+        }
+
+        return err.response as ApiResponse<D>;
+      });
+  }
+
   api.interceptors.request.use(requestHandler);
 
   return {
     getApi,
     postApi,
+    putApi,
   };
 }
 

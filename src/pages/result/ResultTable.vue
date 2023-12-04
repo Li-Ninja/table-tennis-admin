@@ -1,14 +1,27 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { QTableColumn } from 'quasar';
+import {
+  QTableColumn, useQuasar,
+} from 'quasar';
+import { useApiPlayerStore } from '@/apiStores/apiPlayer.store';
 import { useApiResultStore } from '@/apiStores/apiResult.store';
+import { useResultApi } from '@/apis/result.api';
+import SelectDialog from '@/components/SelectDialog.vue';
 import { MenuEnum } from '@/enums/common.enum';
+import { Result } from '@/types/result';
 
 /** base */
+
+/** base */
+const $q = useQuasar();
 const { getResultList } = useApiResultStore();
+const { getPlayerList } = useApiPlayerStore();
 const { resultList } = storeToRefs(useApiResultStore());
+const { playerList } = storeToRefs(useApiPlayerStore());
+const { putResult } = useResultApi();
 
 void getResultList();
+void getPlayerList();
 
 const columns: Array<QTableColumn<any>> = [
   {
@@ -67,11 +80,51 @@ const columns: Array<QTableColumn<any>> = [
       return '';
     },
   },
+  {
+    name: 'editPlayer',
+    label: '編輯選手',
+    align: 'center',
+    field: () => '',
+  },
+  {
+    name: 'editScore',
+    label: '編輯比分',
+    align: 'center',
+    field: () => '',
+  },
 ];
 
 const pagination = {
   rowsPerPage: 10,
 };
+
+async function editPlayer(row: Result) {
+  $q.dialog({
+    component: SelectDialog,
+    componentProps: {
+      title: '編輯選手名稱',
+      options: playerList.value,
+      playerIdList: [
+        row.player_id_a_1,
+        row.player_id_a_2,
+        row.player_id_b_1,
+        row.player_id_b_2,
+      ],
+    },
+  }).onOk(async (player: (number | null)[]) => {
+    const putData = {
+      id: row.id,
+      player_id_a_1: player[0],
+      player_id_a_2: player[1],
+      player_id_b_1: player[2],
+      player_id_b_2: player[3],
+    };
+
+    await putResult(putData);
+
+    getResultList();
+  });
+}
 
 </script>
 
@@ -103,6 +156,22 @@ const pagination = {
       :columns="columns"
       row-key="name"
       :pagination="pagination"
-    />
+    >
+      <template #body-cell-editPlayer="props">
+        <q-td
+          key="editPlayer"
+          :props="props"
+        >
+          <q-btn
+            dense
+            flat
+            round
+            color="primary"
+            icon="mdi-pencil"
+            @click="editPlayer(props.row)"
+          />
+        </q-td>
+      </template>
+    </q-table>
   </div>
 </template>
