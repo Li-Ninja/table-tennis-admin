@@ -9,6 +9,8 @@ export interface Result {
   player_name_a_2: Player['id'] | null;
   player_name_b_1: Player['id'];
   player_name_b_2: Player['id'] | null;
+  scoreA: number | null;
+  scoreB: number | null;
 }
 
 export interface ResultPost {

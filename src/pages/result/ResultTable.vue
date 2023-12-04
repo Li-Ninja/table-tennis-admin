@@ -29,12 +29,11 @@ const columns: Array<QTableColumn<any>> = [
     align: 'center',
     field: row => row.roundIndex,
   },
-  // TODO 顯示大比分
   {
     name: 'result',
     label: '比賽結果',
     align: 'center',
-    field: () => '',
+    field: row => (row.scoreA ? `${row.scoreA} : ${row.scoreB}` : '-'),
   },
   {
     name: 'round',
