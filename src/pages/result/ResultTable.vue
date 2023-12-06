@@ -5,20 +5,25 @@ import {
 } from 'quasar';
 import { useApiPlayerStore } from '@/apiStores/apiPlayer.store';
 import { useApiResultStore } from '@/apiStores/apiResult.store';
+import { useApiResultItemStore } from '@/apiStores/apiResultItem.store';
 import { useResultApi } from '@/apis/result.api';
+import { useResultItemApi } from '@/apis/resultItem.api';
+import ScoreDialog from '@/components/ScoreDialog.vue';
 import SelectDialog from '@/components/SelectDialog.vue';
 import { MenuEnum } from '@/enums/common.enum';
 import { Result } from '@/types/result';
-
-/** base */
+import { ResultItem } from '@/types/resultItem';
 
 /** base */
 const $q = useQuasar();
 const { getResultList } = useApiResultStore();
 const { getPlayerList } = useApiPlayerStore();
+const { getResultItemList } = useApiResultItemStore();
 const { resultList } = storeToRefs(useApiResultStore());
 const { playerList } = storeToRefs(useApiPlayerStore());
+const { resultItemList } = storeToRefs(useApiResultItemStore());
 const { putResult } = useResultApi();
+const { postResultItem, putResultItem } = useResultItemApi();
 
 void getResultList();
 void getPlayerList();
@@ -126,6 +131,33 @@ async function editPlayer(row: Result) {
   });
 }
 
+async function editScore(row: Result) {
+  await getResultItemList(row.id);
+
+  $q.dialog({
+    component: ScoreDialog,
+    componentProps: {
+      id: row.id,
+      list: resultItemList.value,
+      playerA1: row.player_nameA1,
+      playerA2: row.player_nameA2,
+      playerB1: row.player_nameB1,
+      playerB2: row.player_nameB2,
+    },
+  }).onOk(async (list: ResultItem[]) => {
+    const postList = list.map(item => ({
+      ...item,
+      player_id_a_1: row.player_id_a_1,
+      player_id_a_2: row.player_id_a_2,
+      player_id_b_1: row.player_id_b_1,
+      player_id_b_2: row.player_id_b_2,
+    }));
+
+    await (resultItemList.value.length === 0 ? postResultItem(postList) : putResultItem(postList));
+    getResultList();
+  });
+}
+
 </script>
 
 <template>
@@ -169,6 +201,21 @@ async function editPlayer(row: Result) {
             color="primary"
             icon="mdi-pencil"
             @click="editPlayer(props.row)"
+          />
+        </q-td>
+      </template>
+      <template #body-cell-editScore="props">
+        <q-td
+          key="editScore"
+          :props="props"
+        >
+          <q-btn
+            dense
+            flat
+            round
+            color="secondary"
+            icon="mdi-pencil"
+            @click="editScore(props.row)"
           />
         </q-td>
       </template>
