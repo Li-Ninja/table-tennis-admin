@@ -51,7 +51,7 @@ const columns: Array<QTableColumn<any>> = [
     name: 'result',
     label: '比賽結果',
     align: 'center',
-    field: row => (row.scoreA ? `${row.scoreA} : ${row.scoreB}` : '-'),
+    field: row => (row.scoreA || row.scoreB ? `${row.scoreA} : ${row.scoreB}` : '-'),
   },
   {
     name: 'round',
