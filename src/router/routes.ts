@@ -5,6 +5,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
+    redirect: MenuEnum.Home,
     children: [
       {
         path: '',
@@ -50,6 +51,18 @@ const routes: RouteRecordRaw[] = [
             component: () => import('pages/result/ResultAdd.vue'),
           },
         ],
+      },
+    ],
+  },
+  {
+    path: '/',
+    component: () => import('layouts/LoginLayout.vue'),
+    redirect: MenuEnum.Login,
+    children: [
+      {
+        path: 'login',
+        name: MenuEnum.Login,
+        component: () => import('pages/Login.vue'),
       },
     ],
   },

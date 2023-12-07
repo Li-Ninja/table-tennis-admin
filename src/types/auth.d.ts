@@ -1,6 +1,8 @@
 import { AxiosRequestConfig } from 'axios';
 
 export interface Login {
+  res: any;
+  [x: string]: any;
   token: string;
 }
 
