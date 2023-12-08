@@ -65,31 +65,20 @@ deploy:
 
       export TT_ADMIN_FRONTEND_IMAGE_NAME=$CI_REGISTRY_IMAGE:$CI_COMMIT_TAG;
 
-      # table-tennis
       export TT_FRONTEND_IMAGE_NAME=$(docker ps --format "{{.Image}}" | grep -E "ttFrontend");
-      # export TT_ADMIN_FRONTEND_IMAGE_NAME=$(docker ps --format "{{.Image}}" | grep -E "ttAdminFrontend");
       export TT_BACKEND_IMAGE_NAME=$(docker ps --format "{{.Image}}" | grep -E "ttBackend");
+      export FRONTEND_IMAGE_NAME=$(docker ps --format "{{.Image}}" | grep -E "frontend");
+      export BACKEND_IMAGE_NAME=$(docker ps --format "{{.Image}}" | grep -E "backend");
 
       if [ "$TT_FRONTEND_IMAGE_NAME" = "" ]; then
         TT_FRONTEND_IMAGE_NAME="registry.gitlab.com/ninja-ccc/table-tennis/table-tennis:latest";
       fi;
-
-      # if [ "$TT_ADMIN_FRONTEND_IMAGE_NAME" = "" ]; then
-      #   TT_ADMIN_FRONTEND_IMAGE_NAME="registry.gitlab.com/ninja-ccc/table-tennis/table-tennis-admin:latest";
-      # fi;
-
       if [ "$TT_BACKEND_IMAGE_NAME" = "" ]; then
         TT_BACKEND_IMAGE_NAME="registry.gitlab.com/ninja-ccc/table-tennis/table-tennis-backend:latest";
       fi;
-
-      # vocabulary
-      export FRONTEND_IMAGE_NAME=$(docker ps --format "{{.Image}}" | grep -E "frontend");
-      export BACKEND_IMAGE_NAME=$(docker ps --format "{{.Image}}" | grep -E "backend");
-
       if [ "$FRONTEND_IMAGE_NAME" = "" ]; then
         FRONT_IMAGE_NAME="registry.gitlab.com/ninja-ccc/vocabulary/vocabulary-frontend:latest";
       fi;
-
       if [ "$BACKEND_IMAGE_NAME" = "" ]; then
         BACKEND_IMAGE_NAME="registry.gitlab.com/ninja-ccc/vocabulary/vocabulary-backend:latest";
       fi;
