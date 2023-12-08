@@ -15,8 +15,39 @@ services:
     volumes:
       - ./.env.backend:/app/.env:ro
 
-  ttAdminFrontend:
-    image: ${TT_ADMIN_FRONTEND_IMAGE_NAME}
+  ttFrontend:
+    image: ${TT_FRONTEND_IMAGE_NAME}
     ports:
       - 81:9000
     restart: always
+
+  ttAdminFrontend:
+    image: ${TT_ADMIN_FRONTEND_IMAGE_NAME}
+    ports:
+      - 82:9001
+    restart: always
+
+  ttBackend:
+    image: ${TT_BACKEND_IMAGE_NAME}
+    ports:
+      - 83:7183
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_HOST: db
+      DATABASE_PORT: 1433
+
+  db:
+    image: mcr.microsoft.com/azure-sql-edge
+    environment:
+      SA_PASSWORD: "${DB_PASSWORD}"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+    restart: always
+
+volumes:
+  sql_data:
