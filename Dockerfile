@@ -1,4 +1,4 @@
-FROM node:16.10.0-slim as builder
+FROM node:20.10.0-slim as builder
 FROM nginx
 WORKDIR /app
 # also can use .dockerignore filter didn't use files
