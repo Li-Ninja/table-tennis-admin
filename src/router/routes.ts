@@ -1,11 +1,21 @@
 import { RouteRecordRaw } from 'vue-router';
 import { MenuEnum } from '@/enums/common.enum';
+import { useLocalStorage } from '@/utils/localStorage.util';
+
+const { getToken } = useLocalStorage();
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
-    redirect: MenuEnum.Home,
+    beforeEnter: async (_to, _from, next) => {
+      // TODO need validate token is valid
+      if (!getToken()) {
+        next({ name: MenuEnum.Login });
+      } else {
+        next();
+      }
+    },
     children: [
       {
         path: '',
