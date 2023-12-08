@@ -13,7 +13,7 @@ build:
   stage: build
   tags:
     - dev-runner
-  image: node:16.10.0
+  image: node:20.10.0
   # needs:
   #   - testing
   artifacts:
