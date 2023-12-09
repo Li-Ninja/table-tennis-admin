@@ -64,7 +64,7 @@ function onConfirm() {
           <!-- TODO label 這邊要在修改 -->
           <q-select
             v-model="result[index]"
-            :disable="props.isSingleMatch && num === 2"
+            :disable="props.isSingleMatch && (index === 1 || index === 3)"
             :options="options"
             :label="`選擇選手_${(num === 1 || num === 2) ? 'A_' + num : 'B_' + Math.floor(num / 2)}`"
             option-label="name"
