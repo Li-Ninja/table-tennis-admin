@@ -3,7 +3,7 @@ import {
   Result, ResultPost, ResultPut,
 } from '@/types/result';
 
-const { getApi, postApi, putApi } = useApi();
+const { getApi, postApi, putApi, deleteApi } = useApi();
 
 export function useResultApi() {
   const url = {
@@ -23,9 +23,15 @@ export function useResultApi() {
     return putApi(url.result, postData);
   }
 
+  function deleteResult(id: number) {
+    // TODO
+    return deleteApi(`${url.result}/${id}`);
+  }
+
   return {
     getResultList,
     postResult,
     putResult,
+    deleteResult,
   };
 }
