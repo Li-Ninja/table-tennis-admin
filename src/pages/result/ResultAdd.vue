@@ -106,7 +106,7 @@ function removeField(index: number) {
               v-model="result.round"
               label="幾強賽"
               lazy-rules
-              :rules="[required()]"
+              :rules="[required(), (val) => !(val > 0 && (val & (val - 1))) || '請輸入 2、4、8、16 的數字']"
             />
           </q-item-section>
           <q-item-section class="col-1">

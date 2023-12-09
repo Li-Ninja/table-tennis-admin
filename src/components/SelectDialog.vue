@@ -8,10 +8,12 @@ const { dialogRef, onDialogOK, onDialogCancel } = useDialogPluginComponent();
 
 const props = withDefaults(defineProps<{
   title?: string;
+  isSingleMatch: boolean;
   options: {id: number | null; name: string}[];
   playerIdList:(number | null)[];
 }>(), {
   title: '',
+  isSingleMatch: false,
   options: undefined,
   playerIdList: undefined,
 });
@@ -62,6 +64,7 @@ function onConfirm() {
           <!-- TODO label 這邊要在修改 -->
           <q-select
             v-model="result[index]"
+            :disable="props.isSingleMatch && num === 2"
             :options="options"
             :label="`選擇選手_${(num === 1 || num === 2) ? 'A_' + num : 'B_' + Math.floor(num / 2)}`"
             option-label="name"

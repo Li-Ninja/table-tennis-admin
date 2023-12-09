@@ -4,6 +4,7 @@ import { Player } from './player';
 export interface Result {
   id: number;
   event_name: number;
+  isSingleMatch: boolean;
   round: number;
   player_nameA1: Player['name'] | null;
   player_nameA2: Player['name'] | null;

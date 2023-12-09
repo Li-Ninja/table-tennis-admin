@@ -100,7 +100,7 @@ const columns: Array<QTableColumn<any>> = [
 ];
 
 const pagination = {
-  rowsPerPage: 10,
+  rowsPerPage: 30,
 };
 
 async function editPlayer(row: Result) {
@@ -109,6 +109,7 @@ async function editPlayer(row: Result) {
     componentProps: {
       title: '編輯選手名稱',
       options: playerList.value,
+      isSingleMatch: row.isSingleMatch,
       playerIdList: [
         row.player_id_a_1,
         row.player_id_a_2,
