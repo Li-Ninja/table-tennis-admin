@@ -145,7 +145,11 @@ async function editScore(row: Result) {
       playerB1: row.player_nameB1,
       playerB2: row.player_nameB2,
     },
-  }).onOk(async (list: ResultItem[]) => {
+  }).onOk(async (list: ResultItem[] | null) => {
+    if (list === null) {
+      return;
+    }
+
     const postList = list.map(item => ({
       ...item,
       player_id_a_1: row.player_id_a_1,

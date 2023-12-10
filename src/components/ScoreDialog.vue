@@ -1,10 +1,15 @@
 <script lang="ts" setup>
-import { useDialogPluginComponent } from 'quasar';
+import {
+  useDialogPluginComponent, useQuasar,
+} from 'quasar';
 import { ref } from 'vue';
+import { useResultItemApi } from '@/apis/resultItem.api';
 import { required } from '@/constants/rule.constant';
 import { ResultItem } from '@/types/resultItem';
 
+const $q = useQuasar();
 const { dialogRef, onDialogOK, onDialogCancel } = useDialogPluginComponent();
+const { deleteResultItem } = useResultItemApi();
 
 const props = withDefaults(defineProps<{
   id: number;
@@ -55,6 +60,23 @@ function removeField(index: number) {
   localList.value.splice(index, 1);
 }
 
+function deleteResultItemFn() {
+  $q.dialog({
+    title: '清空對戰記錄',
+    message: '確認要清空此對戰記錄嗎？刪除後無法復原。',
+    cancel: true,
+    persistent: true,
+  }).onOk(async () => {
+    await deleteResultItem(props.id);
+  }).onCancel(() => {
+    // console.log('>>>> Cancel')
+  }).onDismiss(() => {
+    // console.log('I am triggered on both OK and Cancel')
+  });
+  console.log();
+  onDialogOK(null);
+}
+
 </script>
 
 <template>
@@ -80,6 +102,18 @@ function removeField(index: number) {
           />
         </div>
         <q-space />
+      </q-card-section>
+      <q-separator />
+      <q-card-section class="q-mb-lg row justify-between">
+        <div class="">
+          <q-btn
+            color="red"
+            icon="mdi-delete"
+            @click="deleteResultItemFn()"
+            label="清空記錄"
+          />
+          清空之後重新編輯才會儲存
+        </div>
       </q-card-section>
       <q-separator />
 

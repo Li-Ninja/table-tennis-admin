@@ -3,7 +3,7 @@ import {
   ResultItem, ResultItemGet, ResultItemPost, ResultItemPut,
 } from '@/types/resultItem';
 
-const { getApi, postApi, putApi } = useApi();
+const { getApi, postApi, putApi, deleteApi } = useApi();
 
 export function useResultItemApi() {
   const url = {
@@ -24,9 +24,15 @@ export function useResultItemApi() {
     return putApi(url.resultItem, postData);
   }
 
+  function deleteResultItem(id: number) {
+    // TODO
+    return deleteApi(`${url.resultItem}/${id}`);
+  }
+
   return {
     getResultItemList,
     postResultItem,
     putResultItem,
+    deleteResultItem,
   };
 }
