@@ -4,7 +4,7 @@ steps:
     args:
       - '-c'
       - |
-        npm install --global yarn && yarn install && yarn build
+        yarn install && yarn build
 
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/$PROJECT_ID/table-tennis-admin:$SHORT_SHA', '.']
