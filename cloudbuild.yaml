@@ -1,9 +1,19 @@
 steps:
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: 'gcr.io/cloud-builders/git'
+    entrypoint: 'bash'
     args:
-    - 'build'
-    - '-t'
-    - 'gcr.io/${PROJECT_ID}/table-tennis-admin:${_IMAGE_TAG}'
+      - '-c'
+      - |
+        git fetch --tags
+        git describe --tags `git rev-list --tags --max-count=1` > .TAG
+        echo "IMAGE_TAG=$(cat .TAG)" > tag.env
+
+ - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        docker build -t gcr.io/$PROJECT_ID/your-app-name:$(cat .TAG) .
 
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
