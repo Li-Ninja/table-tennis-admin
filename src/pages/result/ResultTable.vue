@@ -29,7 +29,7 @@ const { getResultItemList } = useApiResultItemStore();
 const { resultList } = storeToRefs(useApiResultStore());
 const { playerList } = storeToRefs(useApiPlayerStore());
 const { resultItemList } = storeToRefs(useApiResultItemStore());
-const { putResult, deleteResult } = useResultApi();
+const { putResult } = useResultApi();
 const { postResultItem, putResultItem } = useResultItemApi();
 const { getEventList } = useApiEventStore();
 const { eventOptions } = storeToRefs(useApiEventStore());
@@ -178,25 +178,25 @@ async function editScore(row: Result) {
   });
 }
 
-async function deleteResultFn() {
-  $q.dialog({
-    title: '刪除',
-    message: '確認要刪除賽程嗎？刪除後無法復原。輸入 1 刪除單打，輸入 2 刪除雙打',
-    prompt: {
-      model: '',
-      type: 'number',
-    },
-    cancel: true,
-    persistent: true,
-  }).onOk(async (data: string) => {
-    await deleteResult(Number(data));
-    void getResultList(resultData);
-  }).onCancel(() => {
-    // console.log('>>>> Cancel')
-  }).onDismiss(() => {
-    // console.log('I am triggered on both OK and Cancel')
-  });
-}
+// async function deleteResultFn() {
+//   $q.dialog({
+//     title: '刪除',
+//     message: '確認要刪除賽程嗎？刪除後無法復原。輸入 1 刪除單打，輸入 2 刪除雙打',
+//     prompt: {
+//       model: '',
+//       type: 'number',
+//     },
+//     cancel: true,
+//     persistent: true,
+//   }).onOk(async (data: string) => {
+//     await deleteResult(Number(data));
+//     void getResultList(resultData);
+//   }).onCancel(() => {
+//     // console.log('>>>> Cancel')
+//   }).onDismiss(() => {
+//     // console.log('I am triggered on both OK and Cancel')
+//   });
+// }
 
 </script>
 
@@ -290,12 +290,13 @@ async function deleteResultFn() {
       </template>
     </q-table>
 
-    <q-btn
+    <!-- TODO 重新調整此功能後再開啟 -->
+    <!-- <q-btn
       class="q-mt-xl"
       color="red"
       icon="mdi-delete"
       @click="deleteResultFn()"
       label="刪除賽程"
-    />
+    /> -->
   </div>
 </template>
