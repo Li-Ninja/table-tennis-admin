@@ -3,6 +3,8 @@ import { storeToRefs } from 'pinia';
 import {
   QTableColumn, useQuasar,
 } from 'quasar';
+import { reactive } from 'vue';
+import { useApiEventStore } from '@/apiStores/apiEvent.store';
 import { useApiPlayerStore } from '@/apiStores/apiPlayer.store';
 import { useApiResultStore } from '@/apiStores/apiResult.store';
 import { useApiResultItemStore } from '@/apiStores/apiResultItem.store';
@@ -10,8 +12,13 @@ import { useResultApi } from '@/apis/result.api';
 import { useResultItemApi } from '@/apis/resultItem.api';
 import ScoreDialog from '@/components/ScoreDialog.vue';
 import SelectDialog from '@/components/SelectDialog.vue';
-import { MenuEnum } from '@/enums/common.enum';
-import { Result } from '@/types/result';
+import { eventTypeOptions } from '@/constants/common.constant';
+import {
+  EventTypeEnum, MenuEnum,
+} from '@/enums/common.enum';
+import {
+  Result, ResultGet,
+} from '@/types/result';
 import { ResultItem } from '@/types/resultItem';
 
 /** base */
@@ -24,9 +31,17 @@ const { playerList } = storeToRefs(useApiPlayerStore());
 const { resultItemList } = storeToRefs(useApiResultItemStore());
 const { putResult, deleteResult } = useResultApi();
 const { postResultItem, putResultItem } = useResultItemApi();
+const { getEventList } = useApiEventStore();
+const { eventOptions } = storeToRefs(useApiEventStore());
 
-void getResultList();
+const resultData = reactive<ResultGet>({
+  event_id: null,
+  event_type: EventTypeEnum.Ranking,
+});
+
+void getResultList(resultData);
 void getPlayerList();
+void getEventList();
 
 const columns: Array<QTableColumn<any>> = [
   {
@@ -128,7 +143,7 @@ async function editPlayer(row: Result) {
 
     await putResult(putData);
 
-    getResultList();
+    getResultList(resultData);
   });
 }
 
@@ -159,7 +174,7 @@ async function editScore(row: Result) {
     }));
 
     await (resultItemList.value.length === 0 ? postResultItem(postList) : putResultItem(postList));
-    getResultList();
+    getResultList(resultData);
   });
 }
 
@@ -175,7 +190,7 @@ async function deleteResultFn() {
     persistent: true,
   }).onOk(async (data: string) => {
     await deleteResult(Number(data));
-    void getResultList();
+    void getResultList(resultData);
   }).onCancel(() => {
     // console.log('>>>> Cancel')
   }).onDismiss(() => {
@@ -187,25 +202,54 @@ async function deleteResultFn() {
 
 <template>
   <div>
-    <q-item class="q-pa-none q-mb-md">
-      <q-item-section>
-        <q-btn
-          class="text-capitalize"
-          @click="getResultList"
-          color="primary"
-        >
-          搜尋
-        </q-btn>
-      </q-item-section>
-      <q-item-section>
-        <q-btn
-          class="text-capitalize"
-          :to="{ name: MenuEnum.ResultAdd }"
-          color="secondary"
-        >
-          增加
-        </q-btn>
-      </q-item-section>
+    <q-item class="overflow-auto">
+      <q-form
+        class="row col-12 q-col-gutter-md"
+        @submit="getResultList(resultData)"
+      >
+        <q-select
+          class="col-4"
+          v-model="resultData.event_id"
+          :options="eventOptions"
+          label="選擇賽事"
+          option-label="label"
+          option-value="key"
+          emit-value
+          map-options
+        />
+        <q-select
+          class="col-4"
+          v-model="resultData.event_type"
+          :options="eventTypeOptions"
+          option-label="label"
+          option-value="key"
+          emit-value
+          map-options
+          label="賽事類型"
+        />
+        <div class="col-4">
+          <q-btn
+            class="fit"
+            type="submit"
+            color="primary"
+          >
+            搜尋
+          </q-btn>
+        </div>
+      </q-form>
+    </q-item>
+    <q-item class="q-ma-md q-pa-none overflow-auto">
+      <div class="row col-12 q-col-gutter-md">
+        <div class="col-4">
+          <q-btn
+            class="fit"
+            :to="{ name: MenuEnum.ResultAdd }"
+            color="secondary"
+          >
+            增加單淘汰賽事
+          </q-btn>
+        </div>
+      </div>
     </q-item>
     <q-table
       class="text-capitalize"

@@ -1,6 +1,6 @@
 import { useApi } from '@/composables/useApi';
 import {
-  Result, ResultPost, ResultPut,
+  Result, ResultGet, ResultPost, ResultPut,
 } from '@/types/result';
 
 const { getApi, postApi, putApi, deleteApi } = useApi();
@@ -11,8 +11,8 @@ export function useResultApi() {
     resultList: '/result',
   };
 
-  function getResultList() {
-    return getApi<Result[]>(url.resultList);
+  function getResultList(data: ResultGet) {
+    return getApi<Result[]>(url.resultList, data);
   }
 
   function postResult(postData: ResultPost[]) {

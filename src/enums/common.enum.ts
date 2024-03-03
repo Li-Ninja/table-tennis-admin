@@ -12,3 +12,9 @@ export enum MenuEnum {
   ResultTable = 'ResultTable',
   ResultAdd = 'ResultAdd'
 }
+
+export enum EventTypeEnum {
+  Single = 1,
+  Double = 2,
+  Ranking = 3
+}

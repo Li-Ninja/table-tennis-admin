@@ -29,3 +29,8 @@ export type ResultPut = Pick<Result,
   'player_id_a_2' |
   'player_id_b_1' |
   'player_id_b_2'>;
+
+export interface ResultGet {
+  event_id: Event['id'] | null;
+  event_type: Event['type'] | null;
+}

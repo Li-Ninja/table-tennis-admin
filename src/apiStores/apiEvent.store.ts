@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import {
-  readonly, ref, shallowReactive, toRefs,
+  computed, readonly, shallowReactive, toRefs,
 } from 'vue';
 import { useEventApi } from '@/apis/event.api';
 import { Event } from '@/types/event';
@@ -11,8 +11,6 @@ export const useApiEventStore = defineStore('apiEvent', () => {
     eventList: [] as Event[],
   });
 
-  const test = ref('');
-
   async function getEventList() {
     const res = await useEventApi().getEventList();
 
@@ -21,10 +19,21 @@ export const useApiEventStore = defineStore('apiEvent', () => {
     }
   }
 
+  const eventOptions = computed(() => [
+    {
+      key: null,
+      label: '',
+    },
+    ...state.eventList.map(item => ({
+      key: item.id,
+      label: item.name,
+    })),
+  ]);
+
   return {
     ...toRefs(readonly(state)),
     getEventList,
     state,
-    test,
+    eventOptions,
   };
 });

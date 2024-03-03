@@ -4,7 +4,7 @@ import {
 } from 'vue';
 import { useResultApi } from '@/apis/result.api';
 import {
-  Result, ResultPost,
+  Result, ResultGet, ResultPost,
 } from '@/types/result';
 
 export const useApiResultStore = defineStore('apiResult', () => {
@@ -15,8 +15,8 @@ export const useApiResultStore = defineStore('apiResult', () => {
 
   const test = ref('');
 
-  async function getResultList() {
-    const res = await useResultApi().getResultList();
+  async function getResultList(data: ResultGet) {
+    const res = await useResultApi().getResultList(data);
 
     if (res?.data) {
       state.resultList = res.data;
