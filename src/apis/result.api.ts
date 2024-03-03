@@ -1,6 +1,6 @@
 import { useApi } from '@/composables/useApi';
 import {
-  Result, ResultGet, ResultPost, ResultPut,
+  Result, ResultGet, ResultPost, ResultPut, ResultRankingPost,
 } from '@/types/result';
 
 const { getApi, postApi, putApi, deleteApi } = useApi();
@@ -8,6 +8,7 @@ const { getApi, postApi, putApi, deleteApi } = useApi();
 export function useResultApi() {
   const url = {
     result: '/result',
+    resultRanking: '/Result/ResultRanking',
     resultList: '/result',
   };
 
@@ -17,6 +18,10 @@ export function useResultApi() {
 
   function postResult(postData: ResultPost[]) {
     return postApi(url.result, postData);
+  }
+
+  function postResultRanking(postData: ResultRankingPost[]) {
+    return postApi(url.resultRanking, postData);
   }
 
   function putResult(postData: ResultPut) {
@@ -31,6 +36,7 @@ export function useResultApi() {
   return {
     getResultList,
     postResult,
+    postResultRanking,
     putResult,
     deleteResult,
   };

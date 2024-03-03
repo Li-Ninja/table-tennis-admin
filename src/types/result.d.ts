@@ -1,5 +1,6 @@
 import { Event } from './event';
 import { Player } from './player';
+import { ResultItem } from './resultItem';
 
 export interface Result {
   id: number;
@@ -16,11 +17,17 @@ export interface Result {
   player_id_b_2: Player['id'] | null;
   scoreA: number | null;
   scoreB: number | null;
+  resultDate: string | null;
 }
 
 export interface ResultPost {
   event_id: Event['id'] | null;
   round: number | null;
+}
+
+export interface ResultRankingPost extends Pick<Result, 'player_id_a_1' | 'player_id_b_1'| 'resultDate'> {
+  event_id: Event['id'] | null;
+  resultItemList: Omit<ResultItem, 'result_Id'>[];
 }
 
 export type ResultPut = Pick<Result,

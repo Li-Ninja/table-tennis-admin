@@ -1,7 +1,7 @@
 import { useApi } from '@/composables/useApi';
 import { Event } from '@/types/event';
 
-const { getApi, postApi } = useApi();
+const { getApi } = useApi();
 
 export function useEventApi() {
   const url = {

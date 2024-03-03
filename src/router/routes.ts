@@ -60,6 +60,11 @@ const routes: RouteRecordRaw[] = [
             name: MenuEnum.ResultAdd,
             component: () => import('pages/result/ResultAdd.vue'),
           },
+          {
+            path: '',
+            name: MenuEnum.ResultRankingAdd,
+            component: () => import('pages/result/ResultRankingAdd.vue'),
+          },
         ],
       },
     ],

@@ -4,7 +4,7 @@ import {
 } from 'vue';
 import { useResultApi } from '@/apis/result.api';
 import {
-  Result, ResultGet, ResultPost,
+  Result, ResultGet, ResultPost, ResultRankingPost,
 } from '@/types/result';
 
 export const useApiResultStore = defineStore('apiResult', () => {
@@ -27,10 +27,15 @@ export const useApiResultStore = defineStore('apiResult', () => {
     return useResultApi().postResult(postData);
   }
 
+  function postResultRankingList(postData: ResultRankingPost[]) {
+    return useResultApi().postResultRanking(postData);
+  }
+
   return {
     ...toRefs(readonly(state)),
     getResultList,
     postResultList,
+    postResultRankingList,
     state,
     test,
   };

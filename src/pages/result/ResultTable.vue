@@ -249,6 +249,15 @@ async function editScore(row: Result) {
             增加單淘汰賽事
           </q-btn>
         </div>
+        <div class="col-4">
+          <q-btn
+            class="fit"
+            :to="{ name: MenuEnum.ResultRankingAdd }"
+            color="secondary"
+          >
+            增加積分賽結果
+          </q-btn>
+        </div>
       </div>
     </q-item>
     <q-table
