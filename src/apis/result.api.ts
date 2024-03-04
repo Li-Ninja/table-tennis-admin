@@ -8,7 +8,7 @@ const { getApi, postApi, putApi, deleteApi } = useApi();
 export function useResultApi() {
   const url = {
     result: '/result',
-    resultRanking: '/Result/ResultRanking',
+    resultRanking: '/result/resultRanking',
     resultList: '/result',
   };
 

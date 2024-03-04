@@ -62,7 +62,7 @@ async function onSubmit() {
   const postData = postList.value.map(post => ({
     ...post,
     event_id: event.value,
-    resultDate: `${resultDate.value} ${post.resultDate}`,
+    resultDate: `${resultDate.value}T${post.resultDate}Z`,
   }));
 
   const res = await postResultRankingList(postData);
@@ -85,7 +85,7 @@ async function onSubmit() {
 function addField() {
   postList.value.push({
     ...defaultResultRankingPost,
-    resultItemList: [...defaultResultRankingPost.resultItemList],
+    resultItemList: [],
   });
 }
 
