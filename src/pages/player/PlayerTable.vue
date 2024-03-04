@@ -23,6 +23,12 @@ const columns: Array<QTableColumn<any>> = [
     align: 'center',
     field: row => row.name,
   },
+  {
+    name: 'score',
+    label: '積分',
+    align: 'center',
+    field: row => row.score,
+  },
 ];
 
 const pagination = {
