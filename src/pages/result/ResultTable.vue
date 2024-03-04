@@ -51,6 +51,12 @@ const columns: Array<QTableColumn<any>> = [
     field: row => row.event_name,
   },
   {
+    name: 'resultDate',
+    label: '日期時間',
+    align: 'center',
+    field: row => (row.resultDate ? `${row.resultDate.split('T')[0]} ${row.resultDate.split('T')[1].replace('Z', '')}` : ''),
+  },
+  {
     name: 'round',
     label: '第幾輪',
     align: 'center',
