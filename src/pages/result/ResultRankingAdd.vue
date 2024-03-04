@@ -130,14 +130,6 @@ function removeField(index: number, list: unknown[]) {
           :rules="[required()]"
         />
       </q-item-section>
-      <q-item-section>
-        <q-btn
-          class="q-mb-md text-capitalize"
-          @click="addField()"
-          color="secondary"
-          label="增加對戰記錄"
-        />
-      </q-item-section>
     </q-item>
     <q-form
       @submit="onSubmit"
@@ -258,20 +250,29 @@ function removeField(index: number, list: unknown[]) {
             </q-item>
           </div>
         </div>
-        <q-item>
-          <q-btn
-            label="送出"
-            class="text-capitalize"
-            type="submit"
-            color="primary"
-          />
-          <q-btn
-            label="重置"
-            type="reset"
-            color="primary"
-            flat
-            class="q-ml-sm text-capitalize"
-          />
+        <q-item class="row">
+          <q-item-section class="col-3">
+            <q-btn
+              @click="addField()"
+              color="secondary"
+              label="增加對戰記錄"
+            />
+          </q-item-section>
+          <q-item-section class="col-2 offset-5">
+            <q-btn
+              label="送出"
+              type="submit"
+              color="primary"
+            />
+          </q-item-section>
+          <q-item-section class="col-2">
+            <q-btn
+              label="重置"
+              type="reset"
+              color="primary"
+              flat
+            />
+          </q-item-section>
         </q-item>
       </q-list>
     </q-form>
