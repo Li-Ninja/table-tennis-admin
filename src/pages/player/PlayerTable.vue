@@ -32,7 +32,7 @@ const columns: Array<QTableColumn<any>> = [
 ];
 
 const pagination = {
-  rowsPerPage: 10,
+  rowsPerPage: 50,
 };
 
 </script>
