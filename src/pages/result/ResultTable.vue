@@ -13,6 +13,7 @@ import { useApiResultStore } from '@/apiStores/apiResult.store';
 import { useApiResultItemStore } from '@/apiStores/apiResultItem.store';
 import { useResultApi } from '@/apis/result.api';
 import { useResultItemApi } from '@/apis/resultItem.api';
+import DatePicker from '@/components/DatePicker.vue';
 import ScoreDialog from '@/components/ScoreDialog.vue';
 import SelectDialog from '@/components/SelectDialog.vue';
 import { eventTypeOptions } from '@/constants/common.constant';
@@ -43,6 +44,7 @@ dayjs.extend(timezone);
 const resultData = reactive<ResultGet>({
   event_id: null,
   event_type: EventTypeEnum.Ranking,
+  resultDate: dayjs().tz('Asia/Taipei').format('YYYY-MM-DD'),
 });
 
 void getResultList(resultData);
@@ -223,7 +225,7 @@ async function editScore(row: Result) {
         @submit="getResultList(resultData)"
       >
         <q-select
-          class="col-4"
+          class="col-3"
           v-model="resultData.event_id"
           :options="eventOptions"
           label="選擇賽事"
@@ -233,7 +235,7 @@ async function editScore(row: Result) {
           map-options
         />
         <q-select
-          class="col-4"
+          class="col-3"
           v-model="resultData.event_type"
           :options="eventTypeOptions"
           option-label="label"
@@ -242,7 +244,11 @@ async function editScore(row: Result) {
           map-options
           label="賽事類型"
         />
-        <div class="col-4">
+        <DatePicker
+          class="col-3"
+          v-model="resultData.resultDate"
+        />
+        <div class="col-3">
           <q-btn
             class="fit"
             type="submit"

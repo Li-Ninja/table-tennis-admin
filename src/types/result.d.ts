@@ -40,4 +40,5 @@ export type ResultPut = Pick<Result,
 export interface ResultGet {
   event_id: Event['id'] | null;
   event_type: Event['type'] | null;
+  resultDate: string | null;
 }
