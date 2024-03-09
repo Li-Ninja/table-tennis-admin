@@ -84,6 +84,10 @@ module.exports = configure(ctx => ({
       Object.assign(viteConf.resolve.alias, {
         '@': path.join(__dirname, './src'),
       });
+
+      // TODO quasar@2.14.7 will show this problem cause of @vitejs/plugin-vue
+      // eslint-disable-next-line
+      viteConf.define.__VUE_PROD_HYDRATION_MISMATCH_DETAILS__ = false;
     },
     // viteVuePluginOptions: {},
 
