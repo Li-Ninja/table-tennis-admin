@@ -14,7 +14,10 @@ export function useResultApi() {
   };
 
   function getResultList(data: ResultGet) {
-    return getApi<Result[]>(url.resultList, data);
+    return getApi<Result[]>(url.resultList, {
+      ...data,
+      resultDate: getUtcDateTime(data.resultDate),
+    });
   }
 
   function postResult(postData: ResultPost[]) {
