@@ -17,7 +17,7 @@ export interface Result {
   player_id_b_2: Player['id'] | null;
   scoreA: number | null;
   scoreB: number | null;
-  resultDate: string | null;
+  resultDateTime: string | null;
 }
 
 export interface ResultPost {
@@ -25,7 +25,7 @@ export interface ResultPost {
   round: number | null;
 }
 
-export interface ResultRankingPost extends Pick<Result, 'player_id_a_1' | 'player_id_b_1'| 'resultDate'> {
+export interface ResultRankingPost extends Pick<Result, 'player_id_a_1' | 'player_id_b_1' | 'resultDateTime'> {
   event_id: Event['id'] | null;
   resultItemList: Omit<ResultItem, 'result_Id'>[];
 }

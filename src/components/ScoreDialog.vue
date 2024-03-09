@@ -73,7 +73,6 @@ function deleteResultItemFn() {
   }).onDismiss(() => {
     // console.log('I am triggered on both OK and Cancel')
   });
-  console.log();
   onDialogOK(null);
 }
 

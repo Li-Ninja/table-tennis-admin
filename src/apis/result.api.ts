@@ -1,4 +1,5 @@
 import { useApi } from '@/composables/useApi';
+import { getUtcDateTime } from '@/constants/common.constant';
 import {
   Result, ResultGet, ResultPost, ResultPut, ResultRankingPost,
 } from '@/types/result';
@@ -21,7 +22,13 @@ export function useResultApi() {
   }
 
   function postResultRanking(postData: ResultRankingPost[]) {
-    return postApi(url.resultRanking, postData);
+    return postApi(
+      url.resultRanking,
+      postData.map(item => ({
+        ...item,
+        resultDateTime: getUtcDateTime(item.resultDateTime),
+      })),
+    );
   }
 
   function putResult(postData: ResultPut) {

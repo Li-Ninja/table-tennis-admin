@@ -1,4 +1,8 @@
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { EventTypeEnum } from '@/enums/common.enum';
+
+dayjs.extend(utc);
 
 export const eventTypeOptions = [
   {
@@ -13,3 +17,5 @@ export const eventTypeOptions = [
       label: key,
     })),
 ];
+
+export const getUtcDateTime = (dateTime: string | null) => (dateTime ? dayjs(dateTime).utc().format() : '');

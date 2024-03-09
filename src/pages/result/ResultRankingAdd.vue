@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { HttpStatusCode } from 'axios';
-import dayjs from 'dayjs';
 import { storeToRefs } from 'pinia';
 import {
   Notify, QInput, QSelect,
@@ -12,6 +11,7 @@ import { useRouter } from 'vue-router';
 import { useApiEventStore } from '@/apiStores/apiEvent.store';
 import { useApiPlayerStore } from '@/apiStores/apiPlayer.store';
 import { useApiResultStore } from '@/apiStores/apiResult.store';
+import DateTimePicker from '@/components/DateTimePicker.vue';
 import { required } from '@/constants/rule.constant';
 import { MenuEnum } from '@/enums/common.enum';
 import { ResultRankingPost } from '@/types/result';
@@ -22,7 +22,6 @@ const { getEventList } = useApiEventStore();
 const { eventOptions } = storeToRefs(useApiEventStore());
 const { getPlayerList } = useApiPlayerStore();
 const { playerList } = storeToRefs(useApiPlayerStore());
-const resultDate = ref(dayjs().format('YYYY-MM-DD'));
 
 const router = useRouter();
 const event = ref(null);
@@ -35,11 +34,10 @@ const defaultResultRankingPost: ResultRankingPost = {
   player_id_a_1: null,
   player_id_b_1: null,
   resultItemList: [],
-  resultDate: null,
+  resultDateTime: '',
 };
 const postList: Ref<ResultRankingPost[]> = ref([{ ...defaultResultRankingPost }]);
 const eventRef = ref<QSelect>();
-const dateRef = ref<QInput>();
 
 function onReset() {
   postList.value.length = 0;
@@ -53,16 +51,9 @@ async function onSubmit() {
     return;
   }
 
-  if (!resultDate.value) {
-    dateRef.value?.focus();
-
-    return;
-  }
-
   const postData = postList.value.map(post => ({
     ...post,
     event_id: event.value,
-    resultDate: `${resultDate.value}T${post.resultDate}Z`,
   }));
 
   const res = await postResultRankingList(postData);
@@ -116,17 +107,6 @@ function removeField(index: number, list: unknown[]) {
           option-value="key"
           emit-value
           map-options
-          :rules="[required()]"
-        />
-      </q-item-section>
-      <q-item-section>
-        <q-input
-          ref="dateRef"
-          filled
-          type="date"
-          v-model="resultDate"
-          label="比賽日期"
-          lazy-rules
           :rules="[required()]"
         />
       </q-item-section>
@@ -194,14 +174,7 @@ function removeField(index: number, list: unknown[]) {
                 />
               </div>
               <div class="col-4">
-                <q-input
-                  filled
-                  type="time"
-                  v-model="result.resultDate"
-                  label="比賽時間"
-                  lazy-rules
-                  :rules="[required()]"
-                />
+                <DateTimePicker v-model="result.resultDateTime" />
               </div>
             </div>
             <q-item

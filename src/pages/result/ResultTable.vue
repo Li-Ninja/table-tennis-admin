@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import { storeToRefs } from 'pinia';
 import {
   QTableColumn, useQuasar,
@@ -34,6 +37,9 @@ const { postResultItem, putResultItem } = useResultItemApi();
 const { getEventList } = useApiEventStore();
 const { eventOptions } = storeToRefs(useApiEventStore());
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 const resultData = reactive<ResultGet>({
   event_id: null,
   event_type: EventTypeEnum.Ranking,
@@ -43,6 +49,9 @@ void getResultList(resultData);
 void getPlayerList();
 void getEventList();
 
+const getDate = (dateTime: string) => dayjs(dateTime).tz('Asia/Taipei').format('YYYY-MM-DD');
+const getTime = (dateTime: string) => dayjs(dateTime).tz('Asia/Taipei').format('HH:mm');
+
 const columns: Array<QTableColumn<any>> = [
   {
     name: 'event_name',
@@ -51,10 +60,10 @@ const columns: Array<QTableColumn<any>> = [
     field: row => row.event_name,
   },
   {
-    name: 'resultDate',
+    name: 'resultDateTime',
     label: '日期時間',
     align: 'center',
-    field: row => (row.resultDate ? `${row.resultDate.split('T')[0]} ${row.resultDate.split('T')[1].replace('Z', '')}` : ''),
+    field: row => (`${getDate(row.resultDateTime)} ${getTime(row.resultDateTime)}`),
   },
   {
     name: 'round',
