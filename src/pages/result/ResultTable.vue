@@ -44,7 +44,7 @@ dayjs.extend(timezone);
 const resultData = reactive<ResultGet>({
   event_id: null,
   event_type: EventTypeEnum.Ranking,
-  resultDate: dayjs().tz('Asia/Taipei').format('YYYY-MM-DD'),
+  startDate: dayjs().tz('Asia/Taipei').format('YYYY-MM-DD'),
 });
 
 void getResultList(resultData);
@@ -246,7 +246,7 @@ async function editScore(row: Result) {
         />
         <DatePicker
           class="col-3"
-          v-model="resultData.resultDate"
+          v-model="resultData.startDate"
         />
         <div class="col-3">
           <q-btn
