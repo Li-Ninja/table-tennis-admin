@@ -22,9 +22,15 @@ const tabs = [
     name: '賽事',
     icon: 'mdi-trophy',
     to: MenuEnum.Result,
-
+  },
+  {
+    name: '更新日誌',
+    icon: 'mdi-history',
+    to: MenuEnum.ChangeLog,
   },
 ];
+
+const packageVersion = `v${import.meta.env.PACKAGE_VERSION}`;
 
 function moveRoute(key: MenuEnum) {
   return router.push({ name: key });
@@ -53,6 +59,21 @@ function toggleLeftDrawer() {
         <q-toolbar-title>
           Table Tennis Admin
         </q-toolbar-title>
+        <q-space />
+        <q-btn
+          color="primary"
+          label="更新日誌"
+          @click="moveRoute(MenuEnum.ChangeLog)"
+          class="q-ml-sm"
+        >
+          <q-badge
+            color="orange"
+            floating
+            transparent
+          >
+            {{ packageVersion }}
+          </q-badge>
+        </q-btn>
       </q-toolbar>
     </q-header>
 

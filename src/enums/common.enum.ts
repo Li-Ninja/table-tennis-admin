@@ -11,7 +11,11 @@ export enum MenuEnum {
   Result = 'Result',
   ResultTable = 'ResultTable',
   ResultAdd = 'ResultAdd',
-  ResultRankingAdd = 'ResultRankingAdd'
+  ResultRankingAdd = 'ResultRankingAdd',
+
+  // ChangeLog
+  ChangeLog = 'ChangeLog',
+  ChangeLogTable = 'ChangeLogTable',
 }
 
 export enum EventTypeEnum {

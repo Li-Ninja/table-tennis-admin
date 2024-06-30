@@ -67,6 +67,21 @@ const routes: RouteRecordRaw[] = [
           },
         ],
       },
+      {
+        path: 'changeLog',
+        name: MenuEnum.ChangeLog,
+        component: () => import('pages/changeLog/ChangeLog.vue'),
+        redirect: {
+          name: MenuEnum.ChangeLogTable,
+        },
+        children: [
+          {
+            path: '',
+            name: MenuEnum.ChangeLogTable,
+            component: () => import('pages/changeLog/ChangeLogTable.vue'),
+          },
+        ],
+      },
     ],
   },
   {

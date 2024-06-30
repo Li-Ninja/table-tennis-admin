@@ -13,6 +13,7 @@
 
 const path = require('path');
 const { configure } = require('quasar/wrappers');
+const packageVersion = require('vite-plugin-package-version');
 const env = require('./env.js');
 
 module.exports = configure(ctx => ({
@@ -103,6 +104,7 @@ module.exports = configure(ctx => ({
         // you need to set i18n resource including paths !
         include: path.resolve(__dirname, './src/i18n/**'),
       }],
+      packageVersion.default(),
     ],
   },
 
