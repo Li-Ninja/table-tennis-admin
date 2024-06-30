@@ -92,6 +92,26 @@ function removeField(index: number, list: unknown[]) {
   list.splice(index, 1);
 }
 
+const filterPlayerList = ref(playerList.value);
+
+function filterFn(val:string, update: (cb: () => void) => void) {
+  if (val === '') {
+    update(() => {
+      filterPlayerList.value = playerList.value;
+    });
+
+    return;
+  }
+
+  update(() => {
+    const needle = val.toLowerCase();
+
+    filterPlayerList.value = playerList.value.filter(
+      v => new RegExp(needle).test(v.name.toLowerCase()),
+    );
+  });
+}
+
 </script>
 
 <template>
@@ -131,24 +151,30 @@ function removeField(index: number, list: unknown[]) {
           <div class="col-5">
             <q-select
               v-model="result.player_id_a_1"
-              :options="playerList"
+              :options="filterPlayerList"
               label="選擇選手A"
               option-label="name"
               option-value="id"
               emit-value
               map-options
+              use-input
+              input-debounce="0"
+              @filter="filterFn"
               :rules="[required()]"
             />
           </div>
           <div class="col-5">
             <q-select
               v-model="result.player_id_b_1"
-              :options="playerList"
+              :options="filterPlayerList"
               label="選擇選手B"
               option-label="name"
               option-value="id"
               emit-value
               map-options
+              use-input
+              input-debounce="0"
+              @filter="filterFn"
               :rules="[required()]"
             />
           </div>
