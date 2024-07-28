@@ -2,10 +2,11 @@ name: CI/CD Pipeline
 
 on:
   push:
-    tags:
+    # tags:
+      # - '*'
+    branches:
       - '*'
-    # branches:
-    #   - 'main'
+      # - main
 
 jobs:
   build:
@@ -17,7 +18,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20.9.0'
+          node-version: '20.10.0'
 
       - name: Cache Yarn dependencies
         uses: actions/cache@v2
@@ -41,8 +42,8 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: next-artifacts
-          path: .next
+          name: dist-artifacts
+          path: dist
           retention-days: 15
 
   docker-image:
@@ -55,8 +56,8 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v2
         with:
-          name: next-artifacts
-          path: .next
+          name: dist-artifacts
+          path: dist
 
       - name: Set up Docker
         uses: docker/setup-buildx-action@v1
@@ -74,8 +75,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/li-ninja/table-tennis:${{ github.sha }}
-            ghcr.io/li-ninja/table-tennis:latest
+            ghcr.io/li-ninja/table-tennis-admin:${{ github.sha }}
+            ghcr.io/li-ninja/table-tennis-admin:latest
 
   deploy:
     needs: docker-image
@@ -98,5 +99,5 @@ jobs:
         run: |
           scp -o StrictHostKeyChecking=no ./docker-compose.yml ${{ secrets.GCP_USER }}@${{ secrets.GCP_SERVER }}:/home/${{ secrets.GCP_USER }}
           ssh -o StrictHostKeyChecking=no ${{ secrets.GCP_USER }}@${{ secrets.GCP_SERVER }} << EOF
-          docker-compose up -d --no-deps --build table-tennis
+          docker-compose up -d --no-deps --build table-tennis-admin
           EOF
