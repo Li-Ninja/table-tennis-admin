@@ -2,10 +2,10 @@ name: CI/CD Pipeline
 
 on:
   push:
-    # tags:
-      # - '*'
-    branches:
+    tags:
       - '*'
+    # branches:
+      # - '*'
       # - main
 
 jobs:
