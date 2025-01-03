@@ -5,13 +5,14 @@ import {
   Notify, QInput, QSelect,
 } from 'quasar';
 import {
-  Ref, ref,
+  Ref, ref, watch,
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { useApiEventStore } from '@/apiStores/apiEvent.store';
 import { useApiPlayerStore } from '@/apiStores/apiPlayer.store';
 import { useApiResultStore } from '@/apiStores/apiResult.store';
-import DateTimePicker from '@/components/DateTimePicker.vue';
+import DatePicker from '@/components/DatePicker.vue';
+import TimePicker from '@/components/TimePicker.vue';
 import { required } from '@/constants/rule.constant';
 import { MenuEnum } from '@/enums/common.enum';
 import { ResultRankingPost } from '@/types/result';
@@ -29,6 +30,8 @@ const event = ref(null);
 void getEventList();
 void getPlayerList();
 
+const commonDate = ref('');
+
 const defaultResultRankingPost: ResultRankingPost = {
   event_id: null,
   player_id_a_1: null,
@@ -36,24 +39,41 @@ const defaultResultRankingPost: ResultRankingPost = {
   resultItemList: [],
   resultDateTime: '',
 };
-const postList: Ref<ResultRankingPost[]> = ref([{ ...defaultResultRankingPost }]);
+
+interface LocalResultRankingPost extends ResultRankingPost {
+  localTime: string;
+}
+
+const postList: Ref<LocalResultRankingPost[]> = ref([{ ...defaultResultRankingPost, localTime: '' }]);
 const eventRef = ref<QSelect>();
 
 function onReset() {
   postList.value.length = 0;
-  postList.value.push({ ...defaultResultRankingPost });
+  postList.value.push({ ...defaultResultRankingPost, localTime: '' });
 }
 
 async function onSubmit() {
   if (!event.value) {
     eventRef.value?.focus();
+    return;
+  }
 
+  const isValid = postList.value.every(post => post.localTime && commonDate.value);
+
+  if (!isValid) {
+    Notify.create({
+      message: '請確保所有記錄都有日期和時間',
+      color: 'negative',
+    });
     return;
   }
 
   const postData = postList.value.map(post => ({
-    ...post,
     event_id: event.value,
+    player_id_a_1: post.player_id_a_1,
+    player_id_b_1: post.player_id_b_1,
+    resultItemList: post.resultItemList,
+    resultDateTime: post.resultDateTime,
   }));
 
   const res = await postResultRankingList(postData);
@@ -77,6 +97,7 @@ function addField() {
   postList.value.push({
     ...defaultResultRankingPost,
     resultItemList: [],
+    localTime: '',
   });
 }
 
@@ -112,6 +133,26 @@ function filterFn(val:string, update: (cb: () => void) => void) {
   });
 }
 
+watch(commonDate, newDate => {
+  if (newDate) {
+    postList.value.forEach(post => {
+      if (post.localTime) {
+        post.resultDateTime = `${newDate} ${post.localTime}`;
+      }
+    });
+  }
+});
+
+function handleTimeChange(time: string, index: number) {
+  if (time) {
+    postList.value[index].localTime = time;
+
+    if (commonDate.value) {
+      postList.value[index].resultDateTime = `${commonDate.value} ${time}`;
+    }
+  }
+}
+
 </script>
 
 <template>
@@ -127,6 +168,13 @@ function filterFn(val:string, update: (cb: () => void) => void) {
           option-value="key"
           emit-value
           map-options
+          :rules="[required()]"
+        />
+      </q-item-section>
+      <q-item-section>
+        <DatePicker
+          v-model="commonDate"
+          label="設定共用日期"
           :rules="[required()]"
         />
       </q-item-section>
@@ -200,7 +248,12 @@ function filterFn(val:string, update: (cb: () => void) => void) {
                 />
               </div>
               <div class="col-4">
-                <DateTimePicker v-model="result.resultDateTime" />
+                <TimePicker
+                  v-model="result.localTime"
+                  label="比賽時間"
+                  :rules="[required()]"
+                  @update:model-value="(time: string) => handleTimeChange(time, key)"
+                />
               </div>
             </div>
             <q-item
