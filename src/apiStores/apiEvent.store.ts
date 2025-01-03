@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { defineStore } from 'pinia';
 import {
   computed, readonly, shallowReactive, toRefs,
@@ -15,7 +16,7 @@ export const useApiEventStore = defineStore('apiEvent', () => {
     const res = await useEventApi().getEventList();
 
     if (res?.data) {
-      state.eventList = res.data;
+      state.eventList = res.data.reverse().filter(item => item.date.split('-')[0] === dayjs().format('YYYY'));
     }
   }
 
@@ -26,7 +27,7 @@ export const useApiEventStore = defineStore('apiEvent', () => {
     },
     ...state.eventList.map(item => ({
       key: item.id,
-      label: item.name,
+      label: `${item.date.split('-')[0]}年 ${item.name}`,
     })),
   ]);
 

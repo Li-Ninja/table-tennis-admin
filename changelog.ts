@@ -1,5 +1,12 @@
 export default [
   {
+    version: 'v1.2',
+    date: '2025-01-04',
+    list: [
+      '賽事選擇由新排序到舊，並只篩選 2025 年度的賽事',
+    ],
+  },
+  {
     version: 'v1.0.0',
     date: '2024-06-30',
     list: [
