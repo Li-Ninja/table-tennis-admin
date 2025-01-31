@@ -304,13 +304,6 @@ function removeField(index: number, list: unknown[]) {
   list.splice(index, 1);
 }
 
-// 新增計算屬性來處理選手列表
-const singlePlayerOptions = computed(() => playerList.value);
-const doublePlayerOptions = computed(() => doublePlayerList.value.map(team => ({
-  id: team.id,
-  name: `${team.teamName} - (${team.player_name_1}/${team.player_name_2})`,
-})));
-
 watch(commonDate, newDate => {
   if (newDate) {
     postList.value.forEach(post => {
@@ -366,6 +359,52 @@ watch(postList, newList => {
     }
   });
 }, { deep: true });
+
+// #region 可以讓 select 有篩選功能
+const filterPlayerList = ref(playerList.value);
+
+function filterPlayerFn(val:string, update: (cb: () => void) => void) {
+  if (val === '') {
+    update(() => {
+      filterPlayerList.value = playerList.value;
+    });
+
+    return;
+  }
+
+  update(() => {
+    const needle = val.toLowerCase();
+
+    filterPlayerList.value = playerList.value.filter(
+      v => new RegExp(needle).test(v.name.toLowerCase()),
+    );
+  });
+}
+
+const doublePlayerOptions = computed(() => doublePlayerList.value.map(team => ({
+  id: team.id,
+  name: `${team.teamName} - (${team.player_name_1}/${team.player_name_2})`,
+})));
+const filterDoublePlayerList = ref(doublePlayerOptions.value);
+
+function filterDoubleFn(val:string, update: (cb: () => void) => void) {
+  if (val === '') {
+    update(() => {
+      filterDoublePlayerList.value = doublePlayerOptions.value;
+    });
+
+    return;
+  }
+
+  update(() => {
+    const needle = val.toLowerCase();
+
+    filterDoublePlayerList.value = doublePlayerOptions.value.filter(
+      v => new RegExp(needle).test(v.name.toLowerCase()),
+    );
+  });
+}
+// endregion
 
 </script>
 
@@ -425,7 +464,7 @@ watch(postList, newList => {
             <q-select
               v-if="result.subEventType === SubEventTypeEnum.Single"
               v-model="result.player_id_a_1"
-              :options="singlePlayerOptions"
+              :options="filterPlayerList"
               :label="'選擇選手A'"
               option-label="name"
               option-value="id"
@@ -433,12 +472,13 @@ watch(postList, newList => {
               map-options
               use-input
               input-debounce="0"
+              @filter="filterPlayerFn"
               :rules="[required()]"
             />
             <q-select
               v-else
               v-model="result.doublePlayer_id_a"
-              :options="doublePlayerOptions"
+              :options="filterDoublePlayerList"
               :label="'選擇雙打隊伍A'"
               option-label="name"
               option-value="id"
@@ -446,6 +486,7 @@ watch(postList, newList => {
               map-options
               use-input
               input-debounce="0"
+              @filter="filterDoubleFn"
               :rules="[required()]"
             />
           </div>
@@ -453,7 +494,7 @@ watch(postList, newList => {
             <q-select
               v-if="result.subEventType === SubEventTypeEnum.Single"
               v-model="result.player_id_b_1"
-              :options="singlePlayerOptions"
+              :options="filterPlayerList"
               :label="'選擇選手B'"
               option-label="name"
               option-value="id"
@@ -461,12 +502,13 @@ watch(postList, newList => {
               map-options
               use-input
               input-debounce="0"
+              @filter="filterPlayerFn"
               :rules="[required()]"
             />
             <q-select
               v-else
               v-model="result.doublePlayer_id_b"
-              :options="doublePlayerOptions"
+              :options="filterDoublePlayerList"
               :label="'選擇雙打隊伍B'"
               option-label="name"
               option-value="id"
@@ -474,6 +516,7 @@ watch(postList, newList => {
               map-options
               use-input
               input-debounce="0"
+              @filter="filterDoubleFn"
               :rules="[required()]"
             />
           </div>
