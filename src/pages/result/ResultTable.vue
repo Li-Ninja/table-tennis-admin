@@ -90,12 +90,12 @@ const columns: Array<QTableColumn<any>> = [
     label: '選手A',
     align: 'center',
     field: row => {
-      if (row.player_nameA1 && row.player_nameA2) {
-        return `${row.player_nameA1} / ${row.player_nameA2}`;
+      if (row.player_name_a_1 && row.player_name_a_2) {
+        return `${row.player_name_a_1} / ${row.player_name_a_2}`;
       }
 
-      if (row.player_nameA1 !== null || row.player_nameA2 !== null) {
-        return row.player_nameA1 ? row.player_nameA1 : row.player_nameA2;
+      if (row.player_name_a_1 !== null || row.player_name_a_2 !== null) {
+        return row.player_name_a_1 ? row.player_name_a_1 : row.player_name_a_2;
       }
 
       return '';
@@ -106,12 +106,12 @@ const columns: Array<QTableColumn<any>> = [
     label: '選手B',
     align: 'center',
     field: row => {
-      if (row.player_nameB1 && row.player_nameB2) {
-        return `${row.player_nameB1} / ${row.player_nameB2}`;
+      if (row.player_name_b_1 && row.player_name_b_2) {
+        return `${row.player_name_b_1} / ${row.player_name_b_2}`;
       }
 
-      if (row.player_nameB1 !== null || row.player_nameB2 !== null) {
-        return row.player_nameB1 ? row.player_nameB1 : row.player_nameB2;
+      if (row.player_name_b_1 !== null || row.player_name_b_2 !== null) {
+        return row.player_name_b_1 ? row.player_name_b_1 : row.player_name_b_2;
       }
 
       return '';
@@ -172,10 +172,10 @@ async function editScore(row: Result) {
     componentProps: {
       id: row.id,
       list: resultItemList.value,
-      playerA1: row.player_nameA1,
-      playerA2: row.player_nameA2,
-      playerB1: row.player_nameB1,
-      playerB2: row.player_nameB2,
+      playerA1: row.player_name_a_1,
+      playerA2: row.player_name_a_2,
+      playerB1: row.player_name_b_1,
+      playerB2: row.player_name_b_2,
     },
   }).onOk(async (list: ResultItem[] | null) => {
     if (list === null) {

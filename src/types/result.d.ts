@@ -10,10 +10,10 @@ export interface Result {
   event_name: number;
   isSingleMatch: boolean;
   round: number;
-  player_nameA1: Player['name'] | null;
-  player_nameA2: Player['name'] | null;
-  player_nameB1: Player['name'] | null;
-  player_nameB2: Player['name'] | null;
+  player_name_a_1: Player['name'] | null;
+  player_name_a_2: Player['name'] | null;
+  player_name_b_1: Player['name'] | null;
+  player_name_b_2: Player['name'] | null;
   player_id_a_1: Player['id'] | null;
   player_id_a_2: Player['id'] | null;
   player_id_b_1: Player['id'] | null;
