@@ -9,7 +9,9 @@ import { useRouter } from 'vue-router';
 import { useApiEventStore } from '@/apiStores/apiEvent.store';
 import { useApiResultStore } from '@/apiStores/apiResult.store';
 import { required } from '@/constants/rule.constant';
-import { MenuEnum } from '@/enums/common.enum';
+import {
+  EventTypeEnum, MenuEnum,
+} from '@/enums/common.enum';
 import { ResultPost } from '@/types/result';
 
 /** base */
@@ -23,6 +25,7 @@ void getEventList();
 const defaultResultPost: ResultPost = {
   event_id: null,
   round: null,
+  event_type: EventTypeEnum.AnnualSingle,
 };
 const postList: Ref<ResultPost[]> = ref([{ ...defaultResultPost }]);
 

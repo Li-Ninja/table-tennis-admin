@@ -4,6 +4,7 @@ import {
 } from 'vue';
 import { usePlayerApi } from '@/apis/player.api';
 import {
+  DoublePlayer,
   Player, PlayerPost,
 } from '@/types/player';
 
@@ -11,6 +12,7 @@ export const useApiPlayerStore = defineStore('apiPlayer', () => {
   // state
   const state = shallowReactive({
     playerList: [] as Player[],
+    doublePlayerList: [] as DoublePlayer[],
   });
 
   const test = ref('');
@@ -23,6 +25,14 @@ export const useApiPlayerStore = defineStore('apiPlayer', () => {
     }
   }
 
+  async function getDoublePlayerList() {
+    const res = await usePlayerApi().getDoublePlayerList();
+
+    if (res?.data) {
+      state.doublePlayerList = res.data;
+    }
+  }
+
   function postPlayerList(postData: PlayerPost[]) {
     return usePlayerApi().postPlayer(postData);
   }
@@ -30,6 +40,7 @@ export const useApiPlayerStore = defineStore('apiPlayer', () => {
   return {
     ...toRefs(readonly(state)),
     getPlayerList,
+    getDoublePlayerList,
     postPlayerList,
     state,
     test,

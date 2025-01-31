@@ -5,7 +5,7 @@ import {
   Notify, QInput, QSelect,
 } from 'quasar';
 import {
-  Ref, ref, watch,
+  Ref, computed, ref, watch,
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { useApiEventStore } from '@/apiStores/apiEvent.store';
@@ -14,30 +14,38 @@ import { useApiResultStore } from '@/apiStores/apiResult.store';
 import DatePicker from '@/components/DatePicker.vue';
 import TimePicker from '@/components/TimePicker.vue';
 import { required } from '@/constants/rule.constant';
-import { MenuEnum } from '@/enums/common.enum';
+import {
+  MenuEnum, SubEventTypeEnum,
+} from '@/enums/common.enum';
 import { ResultRankingPost } from '@/types/result';
 
 /** base */
 const { postResultRankingList } = useApiResultStore();
 const { getEventList } = useApiEventStore();
 const { eventOptions } = storeToRefs(useApiEventStore());
-const { getPlayerList } = useApiPlayerStore();
-const { playerList } = storeToRefs(useApiPlayerStore());
+const { getPlayerList, getDoublePlayerList } = useApiPlayerStore();
+const { playerList, doublePlayerList } = storeToRefs(useApiPlayerStore());
 
 const router = useRouter();
 const event = ref(null);
 
 void getEventList();
 void getPlayerList();
+void getDoublePlayerList();
 
 const commonDate = ref('');
 
 const defaultResultRankingPost: ResultRankingPost = {
   event_id: null,
   player_id_a_1: null,
+  player_id_a_2: null,
   player_id_b_1: null,
+  player_id_b_2: null,
+  doublePlayer_id_a: null,
+  doublePlayer_id_b: null,
   resultItemList: [],
   resultDateTime: '',
+  subEventType: SubEventTypeEnum.Single,
 };
 
 interface LocalResultRankingPost extends ResultRankingPost {
@@ -81,48 +89,6 @@ function validateTableTennisScore(scoreA: number, scoreB: number) {
   }
 
   return false;
-}
-
-function validateBestOfFive(resultItemList: ResultRankingPost['resultItemList']) {
-  const validScores = resultItemList.filter(
-    item => !Number.isNaN(item.scoreA) && !Number.isNaN(item.scoreB),
-  );
-
-  if (validScores.length === 0) {
-    return true;
-  }
-
-  const aWins = validScores.filter(item => item.scoreA > item.scoreB).length;
-  const bWins = validScores.filter(item => item.scoreA < item.scoreB).length;
-
-  // 檢查是否超過五局
-  if (resultItemList.length > 5) {
-    Notify.create({
-      message: '最多只能有五局比賽',
-      color: 'warning',
-    });
-    return false;
-  }
-
-  // 檢查是否有一方已經獲得三勝
-  if (aWins > 3 || bWins > 3) {
-    Notify.create({
-      message: '比賽已經結束，獲勝方已達三勝',
-      color: 'warning',
-    });
-    return false;
-  }
-
-  // 如果已經打滿五局，必須有一方三勝
-  if (resultItemList.length === 5 && aWins !== 3 && bWins !== 3) {
-    Notify.create({
-      message: '五局比賽結束時必須有一方達到三勝',
-      color: 'warning',
-    });
-    return false;
-  }
-
-  return true;
 }
 
 function onReset() {
@@ -203,9 +169,14 @@ async function onSubmit() {
   const postData = postList.value.map(post => ({
     event_id: event.value,
     player_id_a_1: post.player_id_a_1,
+    player_id_a_2: post.player_id_a_2,
     player_id_b_1: post.player_id_b_1,
+    player_id_b_2: post.player_id_b_2,
+    doublePlayer_id_a: post.doublePlayer_id_a,
+    doublePlayer_id_b: post.doublePlayer_id_b,
     resultItemList: post.resultItemList,
     resultDateTime: post.resultDateTime,
+    subEventType: post.subEventType,
   }));
 
   const res = await postResultRankingList(postData);
@@ -333,25 +304,12 @@ function removeField(index: number, list: unknown[]) {
   list.splice(index, 1);
 }
 
-const filterPlayerList = ref(playerList.value);
-
-function filterFn(val:string, update: (cb: () => void) => void) {
-  if (val === '') {
-    update(() => {
-      filterPlayerList.value = playerList.value;
-    });
-
-    return;
-  }
-
-  update(() => {
-    const needle = val.toLowerCase();
-
-    filterPlayerList.value = playerList.value.filter(
-      v => new RegExp(needle).test(v.name.toLowerCase()),
-    );
-  });
-}
+// 新增計算屬性來處理選手列表
+const singlePlayerOptions = computed(() => playerList.value);
+const doublePlayerOptions = computed(() => doublePlayerList.value.map(team => ({
+  id: team.id,
+  name: `${team.teamName} - (${team.player_name_1}/${team.player_name_2})`,
+})));
 
 watch(commonDate, newDate => {
   if (newDate) {
@@ -372,6 +330,42 @@ function handleTimeChange(time: string, index: number) {
     }
   }
 }
+
+// 新增 watch 來處理雙打和單打的值同步
+watch(postList, newList => {
+  newList.forEach(result => {
+    if (result.subEventType === SubEventTypeEnum.Single) {
+      // 單打時清空雙打相關欄位
+      result.player_id_a_2 = null;
+      result.player_id_b_2 = null;
+      result.doublePlayer_id_a = null;
+      result.doublePlayer_id_b = null;
+    } else {
+      // 雙打時根據 doublePlayer 設定對應的選手
+      if (result.doublePlayer_id_a) {
+        const doubleTeamA = doublePlayerList.value.find(
+          team => team.id === result.doublePlayer_id_a,
+        );
+
+        if (doubleTeamA) {
+          result.player_id_a_1 = doubleTeamA.player_id_1;
+          result.player_id_a_2 = doubleTeamA.player_id_2;
+        }
+      }
+
+      if (result.doublePlayer_id_b) {
+        const doubleTeamB = doublePlayerList.value.find(
+          team => team.id === result.doublePlayer_id_b,
+        );
+
+        if (doubleTeamB) {
+          result.player_id_b_1 = doubleTeamB.player_id_1;
+          result.player_id_b_2 = doubleTeamB.player_id_2;
+        }
+      }
+    }
+  });
+}, { deep: true });
 
 </script>
 
@@ -416,33 +410,70 @@ function handleTimeChange(time: string, index: number) {
               </template>
             </q-field>
           </div>
-          <div class="col-5">
+          <div class="col-2">
+            <q-option-group
+              v-model="result.subEventType"
+              :options="[
+                { label: '單打', value: SubEventTypeEnum.Single },
+                { label: '雙打', value: SubEventTypeEnum.Double },
+              ]"
+              color="primary"
+              inline
+            />
+          </div>
+          <div class="col-4">
             <q-select
+              v-if="result.subEventType === SubEventTypeEnum.Single"
               v-model="result.player_id_a_1"
-              :options="filterPlayerList"
-              label="選擇選手A"
+              :options="singlePlayerOptions"
+              :label="'選擇選手A'"
               option-label="name"
               option-value="id"
               emit-value
               map-options
               use-input
               input-debounce="0"
-              @filter="filterFn"
+              :rules="[required()]"
+            />
+            <q-select
+              v-else
+              v-model="result.doublePlayer_id_a"
+              :options="doublePlayerOptions"
+              :label="'選擇雙打隊伍A'"
+              option-label="name"
+              option-value="id"
+              emit-value
+              map-options
+              use-input
+              input-debounce="0"
               :rules="[required()]"
             />
           </div>
-          <div class="col-5">
+          <div class="col-4">
             <q-select
+              v-if="result.subEventType === SubEventTypeEnum.Single"
               v-model="result.player_id_b_1"
-              :options="filterPlayerList"
-              label="選擇選手B"
+              :options="singlePlayerOptions"
+              :label="'選擇選手B'"
               option-label="name"
               option-value="id"
               emit-value
               map-options
               use-input
               input-debounce="0"
-              @filter="filterFn"
+              :rules="[required()]"
+            />
+            <q-select
+              v-else
+              v-model="result.doublePlayer_id_b"
+              :options="doublePlayerOptions"
+              :label="'選擇雙打隊伍B'"
+              option-label="name"
+              option-value="id"
+              emit-value
+              map-options
+              use-input
+              input-debounce="0"
               :rules="[required()]"
             />
           </div>

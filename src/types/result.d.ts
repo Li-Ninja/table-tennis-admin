@@ -1,6 +1,9 @@
 import { Event } from './event';
 import { Player } from './player';
 import { ResultItem } from './resultItem';
+import {
+  EventTypeEnum, SubEventTypeEnum,
+} from '@/enums/common.enum';
 
 export interface Result {
   id: number;
@@ -23,11 +26,15 @@ export interface Result {
 export interface ResultPost {
   event_id: Event['id'] | null;
   round: number | null;
+  event_type: EventTypeEnum;
 }
 
-export interface ResultRankingPost extends Pick<Result, 'player_id_a_1' | 'player_id_b_1' | 'resultDateTime'> {
+export interface ResultRankingPost extends Pick<Result, 'player_id_a_1' | 'player_id_b_1' | 'player_id_a_2' | 'player_id_b_2' | 'resultDateTime'> {
   event_id: Event['id'] | null;
   resultItemList: Omit<ResultItem, 'result_Id'>[];
+  subEventType: SubEventTypeEnum;
+  doublePlayer_id_a: number | null;
+  doublePlayer_id_b: number | null;
 }
 
 export type ResultPut = Pick<Result,

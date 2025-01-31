@@ -1,5 +1,12 @@
 export default [
   {
+    version: 'v1.3',
+    date: '2025-01-31',
+    list: [
+      '賽事增加雙打的輸入模式',
+    ],
+  },
+  {
     version: 'v1.2',
     date: '2025-01-04',
     list: [

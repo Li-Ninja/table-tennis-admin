@@ -1,6 +1,6 @@
 import { useApi } from '@/composables/useApi';
 import {
-  Player, PlayerPost,
+  DoublePlayer, Player, PlayerPost,
 } from '@/types/player';
 
 const { getApi, postApi } = useApi();
@@ -9,10 +9,15 @@ export function usePlayerApi() {
   const url = {
     player: '/player',
     playerList: '/player',
+    doublePlayerList: '/player/doublePlayer',
   };
 
   function getPlayerList() {
     return getApi<Player[]>(url.playerList);
+  }
+
+  function getDoublePlayerList() {
+    return getApi<DoublePlayer[]>(url.doublePlayerList);
   }
 
   function postPlayer(postData: PlayerPost[]) {
@@ -21,6 +26,7 @@ export function usePlayerApi() {
 
   return {
     getPlayerList,
+    getDoublePlayerList,
     postPlayer,
   };
 }

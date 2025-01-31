@@ -43,7 +43,7 @@ dayjs.extend(timezone);
 
 const resultData = reactive<ResultGet>({
   event_id: null,
-  event_type: EventTypeEnum.Ranking,
+  event_type: EventTypeEnum.Score,
   startDate: dayjs().tz('Asia/Taipei').format('YYYY-MM-DD'),
 });
 
